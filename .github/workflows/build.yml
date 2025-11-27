@@ -11,7 +11,7 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -23,14 +23,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller
         # 安装你的项目依赖
-        pip install -r requirements.txt
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
     - name: Build with PyInstaller
       run: |
-        pyinstaller --windowed --name="POA-Stuff-Registration" --icon=RS.icns POA-Stuff-Registration.py
+        # 检查图标文件是否存在，如果不存在则跳过 --icon 参数
+        if [ -f "RS.icns" ]; then
+          pyinstaller --windowed --name="POA-Stuff-Registration" --icon=RS.icns POA-Stuff-Registration.py
+        else
+          pyinstaller --windowed --name="POA-Stuff-Registration" POA-Stuff-Registration.py
+          echo "警告: 未找到 RS.icns 图标文件，使用默认图标构建"
+        fi
     
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: POA-Stuff-Registration-macOS
         path: dist/POA-Stuff-Registration.app
