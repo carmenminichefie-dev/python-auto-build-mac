@@ -21,13 +21,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyinstaller pillow
-        # 安装其他依赖（如果有的话）
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install pyinstaller
+        # 不再安装 pillow
     
-    - name: Build with PyInstaller (修复版)
+    - name: Build with PyInstaller (精简版)
       run: |
-        pyinstaller --windowed --name="POA-Stuff-Registration" --add-data="RS.icns:." --hidden-import=tkinter --hidden-import=PIL --hidden-import=PIL._tkinter_finder POA-Stuff-Registration.py
+        pyinstaller --windowed --name="POA-Stuff-Registration" --icon=RS.icns POA-Stuff-Registration.py
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
