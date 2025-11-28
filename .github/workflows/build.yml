@@ -21,19 +21,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyinstaller
-        # 安装你的项目依赖
+        pip install pyinstaller pillow
+        # 安装其他依赖（如果有的话）
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
-    - name: Build with PyInstaller
+    - name: Build with PyInstaller (修复版)
       run: |
-        # 检查图标文件是否存在，如果不存在则跳过 --icon 参数
-        if [ -f "RS.icns" ]; then
-          pyinstaller --windowed --name="POA-Stuff-Registration" --icon=RS.icns POA-Stuff-Registration.py
-        else
-          pyinstaller --windowed --name="POA-Stuff-Registration" POA-Stuff-Registration.py
-          echo "警告: 未找到 RS.icns 图标文件，使用默认图标构建"
-        fi
+        pyinstaller --windowed --name="POA-Stuff-Registration" --add-data="RS.icns:." --hidden-import=tkinter --hidden-import=PIL --hidden-import=PIL._tkinter_finder POA-Stuff-Registration.py
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
